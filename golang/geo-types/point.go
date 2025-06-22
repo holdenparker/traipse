@@ -15,7 +15,7 @@ func (p PointGeometry) IsValid() bool {
 }
 
 func (p PointGeometry) MarshalJSON() ([]byte, error) {
-	return GeoJSONMarshalFactory(PointType, p.Coordinates)
+	return GeoJSONMarshalFactory(p.Type(), p.Coordinates)
 }
 
 func (p PointGeometry) Type() string {

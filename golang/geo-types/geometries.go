@@ -30,7 +30,7 @@ func GeoJSONMarshalFactory[coordsType any](typeString string, coords coordsType)
 		GeomType
 		Type string `json:"type"`
 	}{
-		Type:     PointType,
+		Type:     typeString,
 		GeomType: GeomType{Coordinates: coords},
 	})
 }
