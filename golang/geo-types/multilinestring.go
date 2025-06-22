@@ -27,14 +27,14 @@ func (mls MultiLineStringGeometry) Type() string {
 	return MultiLineStringType
 }
 
-func (ls *MultiLineStringGeometry) UnmarshalJSON(data []byte) error {
-	coords, err := GeoJSONUnmarshalFactory(ls.Type(), MultiLineStringCoords{}, data)
+func (mls *MultiLineStringGeometry) UnmarshalJSON(data []byte) error {
+	coords, err := GeoJSONUnmarshalFactory(mls.Type(), MultiLineStringCoords{}, data)
 
 	if err != nil {
 		return fmt.Errorf("%w: %w", MultiLineStringGeometryUnmarshallingError, err)
 	}
 
-	ls.Coordinates = coords
+	mls.Coordinates = coords
 
 	return nil
 }
