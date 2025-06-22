@@ -8,7 +8,7 @@ import (
 type MultiPointCoords = []PointCoords
 type MultiPointGeometry geometryBuilder[MultiPointCoords]
 
-var MultiPointGeometryUnmarshallingError = errors.New("PointGeometry UnmarshalJSON error")
+var MultiPointGeometryUnmarshallingError = errors.New("LineString UnmarshalJSON error")
 
 func (mp MultiPointGeometry) MarshalJSON() ([]byte, error) {
 	return GeoJSONMarshalFactory(mp.Type(), mp.Coordinates)
@@ -23,7 +23,7 @@ func (mp MultiPointGeometry) Type() string {
 }
 
 func (mp *MultiPointGeometry) UnmarshalJSON(data []byte) error {
-	coords, err := GeoJSONUnmarshalFactory(MultiPointType, MultiPointCoords{}, data)
+	coords, err := GeoJSONUnmarshalFactory(mp.Type(), MultiPointCoords{}, data)
 
 	if err != nil {
 		return fmt.Errorf("%w: %w", MultiPointGeometryUnmarshallingError, err)

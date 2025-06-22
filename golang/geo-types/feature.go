@@ -77,6 +77,9 @@ func (f *Feature) UnmarshalJSON(data []byte) error {
 	case MultiPointType:
 		geom = &MultiPointGeometry{}
 		err = json.Unmarshal(result.Geometry, geom)
+	case LineStringType:
+		geom = &LineStringGeometry{}
+		err = json.Unmarshal(result.Geometry, geom)
 	default:
 		err = fmt.Errorf("%w: %w", FeatureUnmarshallingError, UnmarshallingFeatureUnsupportedGeometryType)
 	}
