@@ -89,6 +89,9 @@ func (f *Feature) UnmarshalJSON(data []byte) error {
 	case MultiPolygonType:
 		geom = &MultiPolygonGeometry{}
 		err = json.Unmarshal(result.Geometry, geom)
+	case GeometryCollectionType:
+		geom = &GeometryCollection{}
+		err = json.Unmarshal(result.Geometry, geom)
 	default:
 		err = fmt.Errorf("%w: %w", FeatureUnmarshallingError, UnmarshallingFeatureUnsupportedGeometryType)
 	}
@@ -107,7 +110,7 @@ func (f *Feature) UnmarshalJSON(data []byte) error {
 type FeatureCollection struct {
 	ID       string    `json:"id,omitempty"`
 	Features []Feature `json:"features"`
-	Bbox     Bbox      `json:"Bbox,omitempty"`
+	Bbox     Bbox      `json:"bbox,omitempty"`
 }
 
 func (fc FeatureCollection) Type() string {
