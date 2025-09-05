@@ -133,3 +133,89 @@ func TestMultiLineStringFeatures(t *testing.T) {
 		t.Fatalf("Marshalled linestring feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
 }
+
+func TestMultiLineStringGeometryCollection(t *testing.T) {
+	geoJson := []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [100, 100, 0, 70, 70, 0],
+		"geometries": [{
+				"type": "MultiLineString",
+				"coordinates": [[[90.0, 90.0, 0], [100.0, 100.0, 0], [70.0, 70.0, 0]]]
+		}]
+	}`)
+	multiLineString := &GeometryCollection{
+		Bbox: Bbox{100, 100, 0, 70, 70, 0},
+		Geometries: []GeoJSON{
+			MultiLineStringGeometry{
+				Coordinates: MultiLineStringCoords{
+					LineStringCoords{
+						Position{90, 90, 0},
+						Position{100, 100, 0},
+						Position{70, 70, 0},
+					},
+				},
+			},
+		},
+	}
+
+	unmarshalResult := &GeometryCollection{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiLineString) {
+		t.Fatalf("Unmarshalled multilinestring geometrycollection should match!\n Expected: %v\n Actual:   %v", multiLineString, unmarshalResult)
+	}
+
+	expected := `{"type":"GeometryCollection","geometries":[{"coordinates":[[[90,90,0],[100,100,0],[70,70,0]]],"type":"MultiLineString"}],"bbox":[100,100,0,70,70,0]}`
+	marshalResult, err := multiLineString.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling geometrycollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled multilinestring geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	geoJson = []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [0, 0, 0, 0, 0, 0],
+		"geometries": [{
+				"type": "MultiLineString",
+				"coordinates": []
+		}]
+	}`)
+	multiLineString = &GeometryCollection{
+		Bbox: Bbox{0, 0, 0, 0, 0, 0},
+		Geometries: []GeoJSON{
+			MultiLineStringGeometry{
+				Coordinates: MultiLineStringCoords{},
+			},
+		},
+	}
+
+	unmarshalResult = &GeometryCollection{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiLineString) {
+		t.Fatalf("Unmarshalled linestring geometrycollection should match!\n Expected: %v\n Actual:   %v", multiLineString, unmarshalResult)
+	}
+
+	expected = `{"type":"GeometryCollection","geometries":[{"coordinates":[],"type":"MultiLineString"}],"bbox":[0,0,0,0,0,0]}`
+	marshalResult, err = multiLineString.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled linestring geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+}

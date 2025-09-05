@@ -3,7 +3,6 @@ package geotypes
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -14,8 +13,6 @@ func TestFeatureCollection(t *testing.T) {
 	unmarshalResult := &FeatureCollection{}
 
 	err := json.Unmarshal(badData, unmarshalResult)
-
-	fmt.Printf("%v\n", err)
 
 	if err == nil {
 		t.Fatal("We should error when trying to parse a bogus JSON as a FeatureCollection!")

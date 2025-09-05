@@ -2,11 +2,70 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestGeometryCollection(t *testing.T) {
+	badData := []byte(`{"not": "real"}`)
+
+	unmarshalResult := &GeometryCollection{}
+
+	err := json.Unmarshal(badData, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when trying to parse a bogus JSON as a GeometryCollection!")
+	}
+	if !errors.Is(err, GeometryCollectionUnmarshallingError) {
+		t.Fatalf("We should be returning a GeometryCollectionUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	badData = []byte(`{
+		"type": "Feature",
+		"geometries": [{
+			"type": "Point",
+			"coordinates": [90.0, 90.0, 0]
+		}]
+	}`)
+
+	unmarshalResult = &GeometryCollection{}
+
+	err = json.Unmarshal(badData, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when trying to parse a Feature as a GeometryCollection!")
+	}
+	if !errors.Is(err, UnmarshallingGeometryCollectionTypeMismatch) {
+		t.Fatalf("We should be returning an UnmarshallingGeometryCollectionTypeMismatch!\nActual: %v\n", err)
+	}
+
+	badData = []byte(`{
+		"type": "GeometryCollection",
+		"geometries": [
+			{
+				"type": "GeometryCollection",
+				"geometries": [
+					{
+						"type": "MultiLineString",
+						"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
+					}
+				]
+			}
+		]
+	}`)
+
+	unmarshalResult = &GeometryCollection{}
+
+	err = json.Unmarshal(badData, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when trying to parse a nested GeometryCollection!")
+	}
+	if !errors.Is(err, UnmarshallingGeometryCollectionUnsupportedGeometryType) {
+		t.Fatalf("We should be returning an UnmarshallingGeometryCollectionUnsupportedGeometryType!\nActual: %v\n", err)
+	}
+
 	geoJson := []byte(`{
 		"type": "GeometryCollection",
 		"geometries": [
@@ -24,8 +83,8 @@ func TestGeometryCollection(t *testing.T) {
 		},
 	}
 
-	unmarshalResult := &GeometryCollection{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &GeometryCollection{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)

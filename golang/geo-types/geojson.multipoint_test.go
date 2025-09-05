@@ -131,3 +131,87 @@ func TestMultiPointFeatures(t *testing.T) {
 		t.Fatalf("Marshalled multipoint feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
 }
+
+func TestMultiPointGeometryCollection(t *testing.T) {
+	geoJson := []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [100, 100, 0, 70, 70, 0],
+		"geometries": [{
+				"type": "MultiPoint",
+				"coordinates": [[90.0, 90.0, 0], [100.0, 100.0, 0], [70.0, 70.0, 0]]
+		}]
+	}`)
+	multiPoint := &GeometryCollection{
+		Bbox: Bbox{100, 100, 0, 70, 70, 0},
+		Geometries: []GeoJSON{
+			MultiPointGeometry{
+				Coordinates: MultiPointCoords{
+					Position{90, 90, 0},
+					Position{100, 100, 0},
+					Position{70, 70, 0},
+				},
+			},
+		},
+	}
+
+	unmarshalResult := &GeometryCollection{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiPoint) {
+		t.Fatalf("Unmarshalled multipoint geometrycollection should match!\n Expected: %v\n Actual:   %v", multiPoint, unmarshalResult)
+	}
+
+	expected := `{"type":"GeometryCollection","geometries":[{"coordinates":[[90,90,0],[100,100,0],[70,70,0]],"type":"MultiPoint"}],"bbox":[100,100,0,70,70,0]}`
+	marshalResult, err := multiPoint.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled multipoint geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	geoJson = []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [0, 0, 0, 0, 0, 0],
+		"geometries": [{
+				"type": "MultiPoint",
+				"coordinates": []
+		}]
+	}`)
+	multiPoint = &GeometryCollection{
+		Bbox: Bbox{0, 0, 0, 0, 0, 0},
+		Geometries: []GeoJSON{
+			MultiPointGeometry{
+				Coordinates: MultiPointCoords{},
+			},
+		},
+	}
+
+	unmarshalResult = &GeometryCollection{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiPoint) {
+		t.Fatalf("Unmarshalled multipoint geometrycollection should match!\n Expected: %v\n Actual:   %v", multiPoint, unmarshalResult)
+	}
+
+	expected = `{"type":"GeometryCollection","geometries":[{"coordinates":[],"type":"MultiPoint"}],"bbox":[0,0,0,0,0,0]}`
+	marshalResult, err = multiPoint.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled multipoint geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+}

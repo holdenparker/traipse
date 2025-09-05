@@ -11,7 +11,6 @@ const GeometryCollectionType = "GeometryCollection"
 var (
 	GeometryCollectionUnmarshallingError                   = errors.New("GeometryCollection UnmarshalJSON error")
 	UnmarshallingGeometryCollectionTypeMismatch            = errors.New("Expecting to unmarshal to GeometryCollection type")
-	UnmarshallingGeometryCollectionMissingGeometryType     = errors.New("Geometry is missing type field")
 	UnmarshallingGeometryCollectionUnsupportedGeometryType = errors.New("Provided geometry type is not supported")
 )
 

@@ -115,3 +115,82 @@ func TestPointFeatures(t *testing.T) {
 		t.Fatalf("Marshalled point feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
 }
+
+func TestPointGeometryCollection(t *testing.T) {
+	geoJson := []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [90, 90, 0, 90, 90, 0],
+		"geometries": [{
+				"type": "Point",
+				"coordinates": [90.0, 90.0, 0]
+		}]
+	}`)
+	point := &GeometryCollection{
+		Bbox: Bbox{90, 90, 0, 90, 90, 0},
+		Geometries: []GeoJSON{
+			PointGeometry{
+				Coordinates: Position{90, 90, 0},
+			},
+		},
+	}
+
+	unmarshalResult := &GeometryCollection{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, point) {
+		t.Fatalf("Unmarshalled point geometrycollection should match!\n Expected: %v\n Actual:   %v", point, unmarshalResult)
+	}
+
+	expected := `{"type":"GeometryCollection","geometries":[{"coordinates":[90,90,0],"type":"Point"}],"bbox":[90,90,0,90,90,0]}`
+	marshalResult, err := point.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled point geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	geoJson = []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [0, 0, 0, 0, 0, 0],
+		"geometries": [{
+				"type": "Point",
+				"coordinates": []
+		}]
+	}`)
+	point = &GeometryCollection{
+		Bbox: Bbox{0, 0, 0, 0, 0, 0},
+		Geometries: []GeoJSON{
+			PointGeometry{
+				Coordinates: Position{0, 0, 0},
+			},
+		},
+	}
+
+	err = json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, point) {
+		t.Fatalf("Unmarshalled point geometrycollection should match!\n Expected: %v\n Actual:   %v", point, unmarshalResult)
+	}
+
+	expected = `{"type":"GeometryCollection","geometries":[{"coordinates":[0,0,0],"type":"Point"}],"bbox":[0,0,0,0,0,0]}`
+	marshalResult, err = point.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled point geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+}

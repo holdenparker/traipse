@@ -135,3 +135,91 @@ func TestMultiPolygonFeatures(t *testing.T) {
 		t.Fatalf("Marshalled linestring feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
 }
+
+func TestMultiPolygonGeometryCollection(t *testing.T) {
+	geoJson := []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [100, 100, 0, 70, 70, 0],
+		"geometries": [{
+				"type": "MultiPolygon",
+				"coordinates": [[[[90.0, 90.0, 0], [100.0, 100.0, 0], [70.0, 70.0, 0]]]]
+		}]
+	}`)
+	multiPolygon := &GeometryCollection{
+		Bbox: Bbox{100, 100, 0, 70, 70, 0},
+		Geometries: []GeoJSON{
+			MultiPolygonGeometry{
+				Coordinates: MultiPolygonCoords{
+					PolygonCoords{
+						LineStringCoords{
+							Position{90, 90, 0},
+							Position{100, 100, 0},
+							Position{70, 70, 0},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	unmarshalResult := &GeometryCollection{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiPolygon) {
+		t.Fatalf("Unmarshalled multipolygon geometrycollection should match!\n Expected: %v\n Actual:   %v", multiPolygon, unmarshalResult)
+	}
+
+	expected := `{"type":"GeometryCollection","geometries":[{"coordinates":[[[[90,90,0],[100,100,0],[70,70,0]]]],"type":"MultiPolygon"}],"bbox":[100,100,0,70,70,0]}`
+	marshalResult, err := multiPolygon.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled multipolygon geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	geoJson = []byte(`{
+		"type": "GeometryCollection",
+		"bbox": [0, 0, 0, 0, 0, 0],
+		"geometries": [{
+				"type": "MultiPolygon",
+				"coordinates": []
+		}]
+	}`)
+	multiPolygon = &GeometryCollection{
+		Bbox: Bbox{0, 0, 0, 0, 0, 0},
+		Geometries: []GeoJSON{
+			MultiPolygonGeometry{
+				Coordinates: MultiPolygonCoords{},
+			},
+		},
+	}
+
+	unmarshalResult = &GeometryCollection{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
+
+	if err != nil {
+		t.Fatalf("Unexpected error unmarshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if !reflect.DeepEqual(unmarshalResult, multiPolygon) {
+		t.Fatalf("Unmarshalled linestring geometrycollection should match!\n Expected: %v\n Actual:   %v", multiPolygon, unmarshalResult)
+	}
+
+	expected = `{"type":"GeometryCollection","geometries":[{"coordinates":[],"type":"MultiPolygon"}],"bbox":[0,0,0,0,0,0]}`
+	marshalResult, err = multiPolygon.MarshalJSON()
+
+	if err != nil {
+		t.Fatalf("Unexpected error marshalling GeometryCollection:\n Error: %v", err)
+	}
+
+	if expected != string(marshalResult) {
+		t.Fatalf("Marshalled linestring geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+}
