@@ -6,10 +6,7 @@ import (
 	"fmt"
 )
 
-const (
-	FeatureType           = "Feature"
-	FeatureCollectionType = "FeatureCollection"
-)
+const FeatureType = "Feature"
 
 var (
 	FeatureUnmarshallingError                   = errors.New("Feature UnmarshalJSON error")
@@ -105,26 +102,4 @@ func (f *Feature) UnmarshalJSON(data []byte) error {
 	f.Geometry = geom
 
 	return nil
-}
-
-type FeatureCollection struct {
-	ID       string    `json:"id,omitempty"`
-	Features []Feature `json:"features"`
-	Bbox     Bbox      `json:"bbox,omitempty"`
-}
-
-func (fc FeatureCollection) Type() string {
-	return FeatureCollectionType
-}
-
-func (fc FeatureCollection) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Type     string    `json:"type"`
-		ID       string    `json:"id,omitempty"`
-		Features []Feature `json:"features"`
-	}{
-		Type:     fc.Type(),
-		ID:       fc.ID,
-		Features: fc.Features,
-	})
 }
