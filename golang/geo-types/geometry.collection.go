@@ -6,6 +6,8 @@ import (
 	"fmt"
 )
 
+const GeometryCollectionType = "GeometryCollection"
+
 var (
 	GeometryCollectionUnmarshallingError                   = errors.New("GeometryCollection UnmarshalJSON error")
 	UnmarshallingGeometryCollectionTypeMismatch            = errors.New("Expecting to unmarshal to GeometryCollection type")

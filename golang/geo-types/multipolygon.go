@@ -6,6 +6,8 @@ import (
 	"reflect"
 )
 
+const MultiPolygonType = "MultiPolygon"
+
 type MultiPolygonCoords = []PolygonCoords
 type MultiPolygonGeometry geometryBuilder[MultiPolygonCoords]
 

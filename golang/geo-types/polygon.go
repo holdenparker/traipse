@@ -6,6 +6,8 @@ import (
 	"reflect"
 )
 
+const PolygonType = "Polygon"
+
 type PolygonCoords = []LineStringCoords
 type PolygonGeometry geometryBuilder[PolygonCoords]
 

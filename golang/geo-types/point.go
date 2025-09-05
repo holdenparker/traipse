@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+const PointType = "Point"
+
 type PointCoords = Position
 type PointGeometry geometryBuilder[PointCoords]
 

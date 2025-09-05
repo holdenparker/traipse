@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+const MultiLineStringType = "MultiLineString"
+
 type MultiLineStringCoords = []LineStringCoords
 type MultiLineStringGeometry geometryBuilder[MultiLineStringCoords]
 

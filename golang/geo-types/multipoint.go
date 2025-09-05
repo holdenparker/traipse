@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+const MultiPointType = "MultiPoint"
+
 type MultiPointCoords = []PointCoords
 type MultiPointGeometry geometryBuilder[MultiPointCoords]
 

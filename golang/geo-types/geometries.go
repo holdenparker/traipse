@@ -6,16 +6,6 @@ import (
 	"fmt"
 )
 
-const (
-	PointType              = "Point"
-	MultiPointType         = "MultiPoint"
-	LineStringType         = "LineString"
-	MultiLineStringType    = "MultiLineString"
-	PolygonType            = "Polygon"
-	MultiPolygonType       = "MultiPolygon"
-	GeometryCollectionType = "GeometryCollection"
-)
-
 var UnmarshallingTypeMismatch = errors.New("Unmarshal type field mismatch")
 
 type geometryBuilder[CoordinateShape any] struct {
