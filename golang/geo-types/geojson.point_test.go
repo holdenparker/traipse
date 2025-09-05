@@ -50,7 +50,6 @@ func TestPointFeatures(t *testing.T) {
 		},
 	}
 
-	// unmarshalResult, err := UnmarshalGeoJSON(geoJson)
 	unmarshalResult := &Feature{}
 	err := json.Unmarshal(geoJson, unmarshalResult)
 
@@ -95,7 +94,6 @@ func TestPointFeatures(t *testing.T) {
 		},
 	}
 
-	// unmarshalResult, err = UnmarshalGeoJSON(geoJson)
 	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
