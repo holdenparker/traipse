@@ -2,12 +2,31 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestPolygonGeometry(t *testing.T) {
 	geoJson := []byte(`{
+		"type": "Point",
+		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
+	}`)
+
+	unmarshalResult := &PolygonGeometry{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when parsing a Point as a Polygon!")
+	}
+	if !errors.Is(err, UnmarshallingTypeMismatch) {
+		t.Fatalf("We should return an UnmarshallingTypeMismatch!\nActual: %v\n", err)
+	}
+	if !errors.Is(err, PolygonGeometryUnmarshallingError) {
+		t.Fatalf("We should return a PolygonGeometryUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	geoJson = []byte(`{
 		"type": "Polygon",
 		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
 	}`)
@@ -15,8 +34,8 @@ func TestPolygonGeometry(t *testing.T) {
 		Coordinates: PolygonCoords{LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}}},
 	}
 
-	unmarshalResult := &PolygonGeometry{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &PolygonGeometry{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling Polygon:\n Error: %v", err)

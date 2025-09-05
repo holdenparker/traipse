@@ -2,12 +2,31 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestLineStringGeometry(t *testing.T) {
 	geoJson := []byte(`{
+		"type": "Point",
+		"coordinates": [[50.0, 40, 0], [90.0, 90.0, 0]]
+	}`)
+
+	unmarshalResult := &LineStringGeometry{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when parsing a Point as a LineString!")
+	}
+	if !errors.Is(err, UnmarshallingTypeMismatch) {
+		t.Fatalf("We should return an UnmarshallingTypeMismatch!\nActual: %v\n", err)
+	}
+	if !errors.Is(err, LineStringGeometryUnmarshallingError) {
+		t.Fatalf("We should return a LineStringGeometryUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	geoJson = []byte(`{
 		"type": "LineString",
 		"coordinates": [[50.0, 40, 0], [90.0, 90.0, 0]]
 	}`)
@@ -15,8 +34,8 @@ func TestLineStringGeometry(t *testing.T) {
 		Coordinates: LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}},
 	}
 
-	unmarshalResult := &LineStringGeometry{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &LineStringGeometry{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling LineStringGeometry:\n Error: %v", err)

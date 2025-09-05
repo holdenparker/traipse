@@ -2,12 +2,31 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestMultiPointGeometry(t *testing.T) {
 	geoJson := []byte(`{
+		"type": "Point",
+		"coordinates": [[80.0, 80, 0], [90.0, 90.0, 0]]
+	}`)
+
+	unmarshalResult := &MultiPointGeometry{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when parsing a Point as a MultiPoint!")
+	}
+	if !errors.Is(err, UnmarshallingTypeMismatch) {
+		t.Fatalf("We should return an UnmarshallingTypeMismatch!\nActual: %v\n", err)
+	}
+	if !errors.Is(err, MultiPointGeometryUnmarshallingError) {
+		t.Fatalf("We should return a MultiPointGeometryUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	geoJson = []byte(`{
 		"type": "MultiPoint",
 		"coordinates": [[80.0, 80, 0], [90.0, 90.0, 0]]
 	}`)
@@ -15,8 +34,8 @@ func TestMultiPointGeometry(t *testing.T) {
 		Coordinates: MultiPointCoords{Position{80.0, 80.0, 0}, Position{90.0, 90.0, 0}},
 	}
 
-	unmarshalResult := &MultiPointGeometry{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &MultiPointGeometry{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling MultiPointGeometry:\n Error: %v", err)

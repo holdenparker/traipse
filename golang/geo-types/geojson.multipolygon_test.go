@@ -2,12 +2,31 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestMultiPolygonGeometry(t *testing.T) {
 	geoJson := []byte(`{
+		"type": "Point",
+		"coordinates": [[[[50.0, 40, 0], [90.0, 90.0, 0]]]]
+	}`)
+
+	unmarshalResult := &MultiPolygonGeometry{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when parsing a Point as a MultiPolygon!")
+	}
+	if !errors.Is(err, UnmarshallingTypeMismatch) {
+		t.Fatalf("We should return an UnmarshallingTypeMismatch!\nActual: %v\n", err)
+	}
+	if !errors.Is(err, MultiPolygonGeometryUnmarshallingError) {
+		t.Fatalf("We should return a PolygonGeometryUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	geoJson = []byte(`{
 		"type": "MultiPolygon",
 		"coordinates": [[[[50.0, 40, 0], [90.0, 90.0, 0]]]]
 	}`)
@@ -15,8 +34,8 @@ func TestMultiPolygonGeometry(t *testing.T) {
 		Coordinates: MultiPolygonCoords{PolygonCoords{LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}}}},
 	}
 
-	unmarshalResult := &MultiPolygonGeometry{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &MultiPolygonGeometry{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling MultiPolygon:\n Error: %v", err)

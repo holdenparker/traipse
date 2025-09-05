@@ -2,12 +2,31 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
 	"testing"
 )
 
 func TestMultiLineStringGeometry(t *testing.T) {
 	geoJson := []byte(`{
+		"type": "Point",
+		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
+	}`)
+
+	unmarshalResult := &MultiLineStringGeometry{}
+	err := json.Unmarshal(geoJson, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when parsing a Point as a MultiLineString!")
+	}
+	if !errors.Is(err, UnmarshallingTypeMismatch) {
+		t.Fatalf("We should return an UnmarshallingTypeMismatch!\nActual: %v\n", err)
+	}
+	if !errors.Is(err, MultiLineStringGeometryUnmarshallingError) {
+		t.Fatalf("We should return a MultiLineStringGeometryUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	geoJson = []byte(`{
 		"type": "MultiLineString",
 		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
 	}`)
@@ -15,8 +34,8 @@ func TestMultiLineStringGeometry(t *testing.T) {
 		Coordinates: MultiLineStringCoords{LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}}},
 	}
 
-	unmarshalResult := &MultiLineStringGeometry{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &MultiLineStringGeometry{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling MultiLineStringGeometry:\n Error: %v", err)
