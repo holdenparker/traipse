@@ -9,10 +9,8 @@ import (
 const FeatureCollectionType = "FeatureCollection"
 
 var (
-	FeatureCollectionUnmarshallingError                  = errors.New("FeatureCollection UnmarshalJSON error")
-	UnmarshallingFeatureCollectionTypeMismatch           = errors.New("Expecting to unmarshal to FeatureCollection type")
-	UnmarshallingFeatureCollectionMissingFeatureType     = errors.New("Feature is missing type field")
-	UnmarshallingFeatureCollectionUnsupportedFeatureType = errors.New("Provided geometry type is not supported")
+	FeatureCollectionUnmarshallingError        = errors.New("FeatureCollection UnmarshalJSON error")
+	UnmarshallingFeatureCollectionTypeMismatch = errors.New("Expecting to unmarshal to FeatureCollection type")
 )
 
 type FeatureCollection struct {

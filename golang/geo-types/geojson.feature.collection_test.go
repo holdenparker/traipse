@@ -2,11 +2,47 @@ package geotypes
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"reflect"
 	"testing"
 )
 
 func TestFeatureCollection(t *testing.T) {
+	badData := []byte(`{"not": "real"}`)
+
+	unmarshalResult := &FeatureCollection{}
+
+	err := json.Unmarshal(badData, unmarshalResult)
+
+	fmt.Printf("%v\n", err)
+
+	if err == nil {
+		t.Fatal("We should error when trying to parse a bogus JSON as a FeatureCollection!")
+	}
+	if !errors.Is(err, FeatureCollectionUnmarshallingError) {
+		t.Fatalf("We should be returning a FeatureCollectionUnmarshallingError!\nActual: %v\n", err)
+	}
+
+	badData = []byte(`{
+		"type": "Feature",
+		"geometry": {
+			"type": "Point",
+			"coordinates": [90.0, 90.0, 0]
+		}
+	}`)
+
+	unmarshalResult = &FeatureCollection{}
+
+	err = json.Unmarshal(badData, unmarshalResult)
+
+	if err == nil {
+		t.Fatal("We should error when trying to parse a Feature as a FeatureCollection!")
+	}
+	if !errors.Is(err, UnmarshallingFeatureCollectionTypeMismatch) {
+		t.Fatalf("We should be returning a UnmarshallingFeatureCollectionTypeMismatch!\nActual: %v\n", err)
+	}
+
 	geoJson := []byte(`{
 		"type": "FeatureCollection",
 		"features": [{
@@ -65,8 +101,8 @@ func TestFeatureCollection(t *testing.T) {
 		},
 	}
 
-	unmarshalResult := &FeatureCollection{}
-	err := json.Unmarshal(geoJson, unmarshalResult)
+	unmarshalResult = &FeatureCollection{}
+	err = json.Unmarshal(geoJson, unmarshalResult)
 
 	if err != nil {
 		t.Fatalf("Unexpected error unmarshalling FeatureCollection:\n Error: %v", err)
