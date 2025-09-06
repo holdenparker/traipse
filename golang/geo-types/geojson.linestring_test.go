@@ -55,6 +55,16 @@ func TestLineStringGeometry(t *testing.T) {
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled linestring feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
+
+	if !lineString.IsValid() {
+		t.Fatalf("LineString with valid coordinates should be valid!\nActual: %v\n", lineString.Coordinates)
+	}
+
+	lineString.Coordinates = LineStringCoords{Position{50.0, 40.0, 0}}
+
+	if lineString.IsValid() {
+		t.Fatalf("LineString with invalid coordinates should not be valid!\nActual: %v\n", lineString.Coordinates)
+	}
 }
 
 func TestLineStringFeatures(t *testing.T) {

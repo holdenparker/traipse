@@ -55,6 +55,16 @@ func TestMultiLineStringGeometry(t *testing.T) {
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled multilinestring feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
+
+	if !multiLineString.IsValid() {
+		t.Fatalf("MultiLineString with valid coordinates should be valid!\nActual: %v\n", multiLineString.Coordinates)
+	}
+
+	multiLineString.Coordinates = MultiLineStringCoords{LineStringCoords{Position{50.0, 40.0, 0}}}
+
+	if multiLineString.IsValid() {
+		t.Fatalf("MultiLineString with invalid coordinates should not be valid!\nActual: %v\n", multiLineString.Coordinates)
+	}
 }
 
 func TestMultiLineStringFeatures(t *testing.T) {
