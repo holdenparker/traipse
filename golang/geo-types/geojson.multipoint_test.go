@@ -55,6 +55,10 @@ func TestMultiPointGeometry(t *testing.T) {
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled multipoint feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
 	}
+
+	if !multiPoint.IsValid() {
+		t.Fatalf("Points should always be valid since the condition is enforced by the value type!\nActual: %v\n", multiPoint.Coordinates)
+	}
 }
 
 func TestMultiPointFeatures(t *testing.T) {

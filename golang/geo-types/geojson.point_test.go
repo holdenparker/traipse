@@ -44,6 +44,10 @@ func TestPointGeometry(t *testing.T) {
 	if !reflect.DeepEqual(unmarshalResult, point) {
 		t.Fatalf("Unmarshalled point geometry should match!\n Expected: %v\n Actual:   %v", point, unmarshalResult)
 	}
+
+	if !point.IsValid() {
+		t.Fatalf("Points should always be valid since the condition is enforced by the value type!\nActual: %v\n", point.Coordinates)
+	}
 }
 
 func TestPointFeatures(t *testing.T) {
