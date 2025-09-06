@@ -28,10 +28,17 @@ func TestPolygonGeometry(t *testing.T) {
 
 	geoJson = []byte(`{
 		"type": "Polygon",
-		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0]]]
+		"coordinates": [[[50.0, 40, 0], [90.0, 90.0, 0], [40.0, 40.0, 0], [50.0, 40, 0]]]
 	}`)
 	polygon := &PolygonGeometry{
-		Coordinates: PolygonCoords{LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}}},
+		Coordinates: PolygonCoords{
+			LineStringCoords{
+				Position{50.0, 40.0, 0},
+				Position{90.0, 90.0, 0},
+				Position{40, 40, 0},
+				Position{50, 40, 0},
+			},
+		},
 	}
 
 	unmarshalResult = &PolygonGeometry{}
@@ -45,7 +52,7 @@ func TestPolygonGeometry(t *testing.T) {
 		t.Fatalf("Unmarshalled point geometry should match!\n Expected: %v\n Actual:   %v", polygon, unmarshalResult)
 	}
 
-	expected := `{"coordinates":[[[50,40,0],[90,90,0]]],"type":"Polygon"}`
+	expected := `{"coordinates":[[[50,40,0],[90,90,0],[40,40,0],[50,40,0]]],"type":"Polygon"}`
 	marshalResult, err := polygon.MarshalJSON()
 
 	if err != nil {
@@ -54,6 +61,22 @@ func TestPolygonGeometry(t *testing.T) {
 
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled polygon feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	if !polygon.IsValid() {
+		t.Fatalf("The polygon should have a valid coordinate definition!\nActual: %v\n", polygon.Coordinates)
+	}
+
+	polygon.Coordinates = PolygonCoords{
+		LineStringCoords{
+			Position{50.0, 40.0, 0},
+			Position{90.0, 90.0, 0},
+			Position{40, 40, 0},
+		},
+	}
+
+	if polygon.IsValid() {
+		t.Fatalf("The polygon should not be valid with invalid coordinates!\nActual: %v\n", polygon.Coordinates)
 	}
 }
 
@@ -235,5 +258,45 @@ func TestPolygonGeometryCollection(t *testing.T) {
 
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled linestring geometrycollection should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+}
+
+func TestIsValidPolygonCoords(t *testing.T) {
+	coords := PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{1, 1, 0},
+			Position{2, 1, 0},
+			Position{0, 0, 0},
+		},
+	}
+
+	if !IsValidPolygonCoords(coords) {
+		t.Fatalf("Simple polygon should be considered valid!\nActual: %v\n", coords)
+	}
+
+	coords = PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{1, 1, 0},
+			Position{0, 0, 0},
+		},
+	}
+
+	if IsValidPolygonCoords(coords) {
+		t.Fatalf("Simple polygons should have at least 4 coordinates!\nActual: %v\n", coords)
+	}
+
+	coords = PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{1, 1, 0},
+			Position{1, 2, 0},
+			Position{2, 2, 0},
+		},
+	}
+
+	if IsValidPolygonCoords(coords) {
+		t.Fatalf("The first and last element of a linear ring must match!\nActuan: %v\n", coords)
 	}
 }

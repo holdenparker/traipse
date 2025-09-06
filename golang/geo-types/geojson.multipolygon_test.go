@@ -28,10 +28,19 @@ func TestMultiPolygonGeometry(t *testing.T) {
 
 	geoJson = []byte(`{
 		"type": "MultiPolygon",
-		"coordinates": [[[[50.0, 40, 0], [90.0, 90.0, 0]]]]
+		"coordinates": [[[[50.0, 40, 0], [90.0, 90.0, 0], [40.0, 40.0, 0], [50.0, 40, 0]]]]
 	}`)
 	multiPolygon := &MultiPolygonGeometry{
-		Coordinates: MultiPolygonCoords{PolygonCoords{LineStringCoords{Position{50.0, 40.0, 0}, Position{90.0, 90.0, 0}}}},
+		Coordinates: MultiPolygonCoords{
+			PolygonCoords{
+				LineStringCoords{
+					Position{50.0, 40.0, 0},
+					Position{90.0, 90.0, 0},
+					Position{40, 40, 0},
+					Position{50, 40, 0},
+				},
+			},
+		},
 	}
 
 	unmarshalResult = &MultiPolygonGeometry{}
@@ -45,7 +54,7 @@ func TestMultiPolygonGeometry(t *testing.T) {
 		t.Fatalf("Unmarshalled point geometry should match!\n Expected: %v\n Actual:   %v", multiPolygon, unmarshalResult)
 	}
 
-	expected := `{"coordinates":[[[[50,40,0],[90,90,0]]]],"type":"MultiPolygon"}`
+	expected := `{"coordinates":[[[[50,40,0],[90,90,0],[40,40,0],[50,40,0]]]],"type":"MultiPolygon"}`
 	marshalResult, err := multiPolygon.MarshalJSON()
 
 	if err != nil {
@@ -54,6 +63,24 @@ func TestMultiPolygonGeometry(t *testing.T) {
 
 	if expected != string(marshalResult) {
 		t.Fatalf("Marshalled multipolygon feature should match!\n Expected: %v\n Actual:   %v", expected, string(marshalResult))
+	}
+
+	if !multiPolygon.IsValid() {
+		t.Fatalf("The polygon should have a valid coordinate definition!\nActual: %v\n", multiPolygon.Coordinates)
+	}
+
+	multiPolygon.Coordinates = MultiPolygonCoords{
+		PolygonCoords{
+			LineStringCoords{
+				Position{50.0, 40.0, 0},
+				Position{90.0, 90.0, 0},
+				Position{40, 40, 0},
+			},
+		},
+	}
+
+	if multiPolygon.IsValid() {
+		t.Fatalf("The polygon should not be valid with invalid coordinates!\nActual: %v\n", multiPolygon.Coordinates)
 	}
 }
 

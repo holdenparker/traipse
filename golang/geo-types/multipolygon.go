@@ -3,7 +3,6 @@ package geotypes
 import (
 	"errors"
 	"fmt"
-	"reflect"
 )
 
 const MultiPolygonType = "MultiPolygon"
@@ -20,13 +19,8 @@ func (mp MultiPolygonGeometry) MarshalJSON() ([]byte, error) {
 func (mp MultiPolygonGeometry) IsValid() bool {
 	// see PolygonGeometry.IsValid for complete notes
 	for _, p := range mp.Coordinates {
-		for _, lr := range p {
-			if len(lr) < 4 {
-				return false
-			}
-			if !reflect.DeepEqual(lr[0], lr[len(lr)-1]) {
-				return false
-			}
+		if !IsValidPolygonCoords(p) {
+			return false
 		}
 	}
 	return true

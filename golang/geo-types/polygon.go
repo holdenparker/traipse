@@ -18,21 +18,7 @@ func (p PolygonGeometry) MarshalJSON() ([]byte, error) {
 }
 
 func (p PolygonGeometry) IsValid() bool {
-	for _, lr := range p.Coordinates {
-		// linear rings require 4 or more positions
-		if len(lr) < 4 {
-			return false
-		}
-		// The first and last element of a linear ring must match
-		if !reflect.DeepEqual(lr[0], lr[len(lr)-1]) {
-			return false
-		}
-		// TODO: The first linear ring must describe the bounds of the surface,
-		// with the following linear rings defining holes within that surface.
-		// In other words, all following linear rings must be completely contained
-		// within the first linear ring.
-	}
-	return true
+	return IsValidPolygonCoords(p.Coordinates)
 }
 
 func (p PolygonGeometry) Type() string {
@@ -49,4 +35,22 @@ func (p *PolygonGeometry) UnmarshalJSON(data []byte) error {
 	p.Coordinates = coords
 
 	return nil
+}
+
+func IsValidPolygonCoords(coords PolygonCoords) bool {
+	for _, lr := range coords {
+		// linear rings require 4 or more positions
+		if len(lr) < 4 {
+			return false
+		}
+		// The first and last element of a linear ring must match
+		if !reflect.DeepEqual(lr[0], lr[len(lr)-1]) {
+			return false
+		}
+		// TODO: The first linear ring must describe the bounds of the surface,
+		// with the following linear rings defining holes within that surface.
+		// In other words, all following linear rings must be completely contained
+		// within the first linear ring.
+	}
+	return true
 }
