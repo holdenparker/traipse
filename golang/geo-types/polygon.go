@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+
+	algos "github.com/holdenparker/traipse/golang/algorithms"
 )
 
 const PolygonType = "Polygon"
@@ -38,13 +40,17 @@ func (p *PolygonGeometry) UnmarshalJSON(data []byte) error {
 }
 
 func IsValidPolygonCoords(coords PolygonCoords) bool {
-	for _, lr := range coords {
+	for i, lr := range coords {
 		// linear rings require 4 or more positions
 		if len(lr) < 4 {
 			return false
 		}
 		// The first and last element of a linear ring must match
 		if !reflect.DeepEqual(lr[0], lr[len(lr)-1]) {
+			return false
+		}
+		positiveArea := i == 0
+		if algos.Shoelace(lr) >= 0 != positiveArea {
 			return false
 		}
 		// TODO: The first linear ring must describe the bounds of the surface,

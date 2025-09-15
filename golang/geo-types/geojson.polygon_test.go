@@ -265,14 +265,33 @@ func TestIsValidPolygonCoords(t *testing.T) {
 	coords := PolygonCoords{
 		LineStringCoords{
 			Position{0, 0, 0},
-			Position{1, 1, 0},
 			Position{2, 1, 0},
+			Position{1, 1, 0},
 			Position{0, 0, 0},
 		},
 	}
 
 	if !IsValidPolygonCoords(coords) {
 		t.Fatalf("Simple polygon should be considered valid!\nActual: %v\n", coords)
+	}
+
+	coords = PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{2, 1, 0},
+			Position{1, 1, 0},
+			Position{0, 0, 0},
+		},
+		LineStringCoords{
+			Position{0.5, 0.4, 0},
+			Position{0.8, 0.7, 0},
+			Position{0.7, 0.5, 0},
+			Position{0.5, 0.4, 0},
+		},
+	}
+
+	if !IsValidPolygonCoords(coords) {
+		t.Fatalf("Simple polygon with a hole should be considered valid!\nActual: %v\n", coords)
 	}
 
 	coords = PolygonCoords{
@@ -298,5 +317,37 @@ func TestIsValidPolygonCoords(t *testing.T) {
 
 	if IsValidPolygonCoords(coords) {
 		t.Fatalf("The first and last element of a linear ring must match!\nActuan: %v\n", coords)
+	}
+
+	coords = PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{1, 1, 0},
+			Position{2, 1, 0},
+			Position{0, 0, 0},
+		},
+	}
+
+	if IsValidPolygonCoords(coords) {
+		t.Fatalf("The first linear ring must go counter-clockwise!\nActual: %v\n", coords)
+	}
+
+	coords = PolygonCoords{
+		LineStringCoords{
+			Position{0, 0, 0},
+			Position{2, 1, 0},
+			Position{1, 1, 0},
+			Position{0, 0, 0},
+		},
+		LineStringCoords{
+			Position{0.5, 0.4, 0},
+			Position{0.7, 0.5, 0},
+			Position{0.8, 0.7, 0},
+			Position{0.5, 0.4, 0},
+		},
+	}
+
+	if IsValidPolygonCoords(coords) {
+		t.Fatalf("The second linear ring must go clockwise!\nActual: %v\n", coords)
 	}
 }
