@@ -7,6 +7,27 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
+type MediaTypes string
+
+func (mt MediaTypes) ptr() *string {
+	return strPtr(string(mt))
+}
+
+const (
+	ApplicationJSON    MediaTypes = "application/json"
+	ApplicationGeoJSON MediaTypes = "application/geo+json"
+	ApplicationOAIJson MediaTypes = "application/vnd.oai.openapi+json;version=3.0"
+	TextHTML           MediaTypes = "text/html"
+)
+
+type responseBuilder[ResponseBody any] struct {
+	Body *ResponseBody
+}
+
+func strPtr(str string) *string {
+	return &str
+}
+
 type OAPI struct {
 	Title        string
 	Version      string
@@ -14,6 +35,7 @@ type OAPI struct {
 	ServeDomain  string
 	router       *http.ServeMux
 	api          huma.API
+	transformers []huma.Transformer
 }
 
 func (oa *OAPI) addTransformers(transformers []huma.Transformer) {
@@ -24,6 +46,7 @@ func (oa *OAPI) BuildAPI() {
 	oa.router = http.NewServeMux()
 	apiConfig := huma.DefaultConfig(oa.Title, oa.Version)
 	apiConfig.OpenAPIPath = oa.OpenAPIPath
+	apiConfig.Transformers = oa.transformers
 	oa.api = humago.New(oa.router, apiConfig)
 }
 

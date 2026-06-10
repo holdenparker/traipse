@@ -18,6 +18,7 @@ var (
 type GeometryType = PointGeometry
 
 type Feature struct {
+	FType      string            `json:"type"` // Only here for reflection purposes
 	ID         string            `json:"id,omitempty"`
 	Bbox       Bbox              `json:"bbox,omitempty"`
 	Properties map[string]string `json:"properties"`

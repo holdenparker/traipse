@@ -14,6 +14,7 @@ var (
 )
 
 type FeatureCollection struct {
+	FCType   string    `json:"type"` // Only here for reflection purposes
 	ID       string    `json:"id,omitempty"`
 	Features []Feature `json:"features"`
 	Bbox     Bbox      `json:"bbox,omitempty"`
