@@ -1,0 +1,174 @@
+[
+  {
+    "id": "city-parks",
+    "title": "City Parks",
+    "description": "Public park boundaries, points of interest, and managed recreational areas.",
+    "itemType": "feature",
+    "crs": [
+      "http://opengis.net"
+    ],
+    "extent": {
+      "spatial": {
+        "bbox": [
+          [-70.3225, 44.1102, -70.3195, 44.1121]
+        ]
+      }
+    },
+    "links": [
+      {
+        "href": "http://example.com",
+        "rel": "self",
+        "type": "application/json"
+      }
+    ],
+    "featureCollection": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "park-001",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [-70.3201, 44.1102],
+                [-70.3195, 44.1102],
+                [-70.3195, 44.1108],
+                [-70.3201, 44.1108],
+                [-70.3201, 44.1102]
+              ]
+            ]
+          },
+          "properties": {
+            "name": "Riverside Park",
+            "acres": "15.5"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "park-002",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-70.3225, 44.1121]
+          },
+          "properties": {
+            "name": "Oak Grove",
+            "acres": "5.2"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "hiking-trails",
+    "title": "Hiking Trails",
+    "description": "Designated multi-use paths and recreational hiking trails.",
+    "itemType": "feature",
+    "crs": [
+      "http://opengis.net"
+    ],
+    "extent": {
+      "spatial": {
+        "bbox": [
+          [-70.325, 44.108, -70.3155, 44.1175]
+        ]
+      }
+    },
+    "links": [
+      {
+        "href": "http://example.com",
+        "rel": "self",
+        "type": "application/json"
+      }
+    ],
+    "featureCollection": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "trail-101",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [-70.325, 44.115],
+              [-70.324, 44.1165],
+              [-70.322, 44.1175]
+            ]
+          },
+          "properties": {
+            "name": "Riverbend Trail",
+            "difficulty": "Easy"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "trail-102",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [-70.318, 44.109],
+              [-70.317, 44.108],
+              [-70.3155, 44.1095]
+            ]
+          },
+          "properties": {
+            "name": "Bluff Loop",
+            "difficulty": "Moderate"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "city-bike-stations",
+    "title": "City Bike Stations",
+    "description": "Active micromobility and bike sharing docking stations.",
+    "itemType": "feature",
+    "crs": [
+      "http://opengis.net"
+    ],
+    "extent": {
+      "spatial": {
+        "bbox": [
+          [-70.3245, 44.1115, -70.319, 44.1142]
+        ]
+      }
+    },
+    "links": [
+      {
+        "href": "http://example.com",
+        "rel": "self",
+        "type": "application/json"
+      }
+    ],
+    "featureCollection": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "station-201",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-70.319, 44.1115]
+          },
+          "properties": {
+            "station_name": "Metro Hub East",
+            "capacity": "20"
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "station-202",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [-70.3245, 44.1142]
+          },
+          "properties": {
+            "station_name": "Trailhead West",
+            "capacity": "12"
+          }
+        }
+      ]
+    }
+  }
+]

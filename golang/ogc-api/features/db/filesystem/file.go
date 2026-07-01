@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	FileDBError                   = errors.New("FileDB Error:")
+	FileDBError                   = errors.New("FileDB Error")
 	FileDBRowNotParseError        = fmt.Errorf("%w: %w", FileDBError, errors.New("Unable to parse file into []fileDbRow"))
 	FileDBNotLoadedError          = fmt.Errorf("%w: %w", FileDBError, errors.New("FileDB has not successfully loaded"))
 	FileDBCollectionNotFoundError = fmt.Errorf("%w: %w", FileDBError, errors.New("Collection was not found"))
@@ -20,7 +20,7 @@ var (
 
 type fileDbRow struct {
 	ogc.Collection
-	FeatureCollection geo.FeatureCollection
+	FeatureCollection geo.FeatureCollection `json:"featureCollection"`
 }
 
 type FileDB struct {
