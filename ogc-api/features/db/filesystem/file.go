@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	geo "github.com/holdenparker/traipse/golang/geo-types"
-	ogc "github.com/holdenparker/traipse/golang/ogc-api/features/schemas"
+	geo "github.com/holdenparker/traipse/geo-types"
+	ogc "github.com/holdenparker/traipse/ogc-api/features/schemas"
 )
 
 var (

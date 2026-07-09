@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	geotypes "github.com/holdenparker/traipse/golang/geo-types"
-	"github.com/holdenparker/traipse/golang/ogc-api/features/schemas"
+	geotypes "github.com/holdenparker/traipse/geo-types"
+	"github.com/holdenparker/traipse/ogc-api/features/schemas"
 )
 
 type TestCoreDB struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	algos "github.com/holdenparker/traipse/golang/algorithms"
+	algos "github.com/holdenparker/traipse/algorithms"
 )
 
 const PolygonType = "Polygon"
